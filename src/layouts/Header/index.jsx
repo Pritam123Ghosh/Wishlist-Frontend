@@ -146,7 +146,6 @@ const Header = () => {
 
           <div className="px-6 mt-6">
             <Link
-              to="/login"
               onClick={handleLogout}
               className={`inline-flex justify-center mb-4 px-4 py-1 text-base font-semibold text-white transition-all duration-200 bg-blue-600 border border-transparent rounded-md ${
                 isLoading
