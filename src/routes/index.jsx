@@ -4,6 +4,7 @@ import Header from "../layouts/Header";
 import Home from "../pages/Home";
 import Achive from "../pages/Achive";
 import Footer from "../layouts/Footer";
+import NotFound from "../utils/NotFound";
 
 const AppRoutes = () => {
   return (
@@ -20,7 +21,7 @@ const AppRoutes = () => {
 
         <Route path="/" element={<Home />} />
 
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
         <Route path="/achieved-wishes" element={<Achive />} />
       </Routes>
       <Footer />
