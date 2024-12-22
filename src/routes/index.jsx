@@ -4,6 +4,7 @@ import Header from "../layouts/Header";
 import Home from "../pages/Home";
 import Achive from "../pages/Achive";
 import Footer from "../layouts/Footer";
+import { Login } from "@mui/icons-material";
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
       <Route path="/builderDetails/:builderID" element={<BuilderDetails />} /> */}
 
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         {/* <Route path="*" element={<NotFound />} /> */}
         <Route path="/achieved-wishes" element={<Achive />} />
       </Routes>
