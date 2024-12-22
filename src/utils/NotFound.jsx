@@ -1,3 +1,5 @@
+import logo1 from "../assets/1.png";
+
 const NotFound = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-96 px-10 pt-10">
@@ -14,6 +16,7 @@ const NotFound = () => {
       >
         Back to Home
       </button>
+      <img className="mx-auto h-20 w-auto" src={logo1} alt="Your Company" />
     </div>
   );
 };
