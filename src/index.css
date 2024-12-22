@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Imprima", sans-serif;
+}
+/* Add this CSS to your styles */
+.mobile-menu {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  max-height: 0; /* Initially hidden */
+  opacity: 0; /* Initially transparent */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.mobile-menu.open {
+  max-height: 500px; /* Set a max height that fits your content */
+  opacity: 1; /* Fully visible */
+}
