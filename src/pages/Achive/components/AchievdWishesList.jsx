@@ -6,6 +6,7 @@ import Alert from "@mui/material/Alert";
 import { Snackbar } from "@mui/material";
 import GeometrySkeleton from "../../../utils/Skeleton";
 import Empty from "../../../utils/Empty";
+import { motion } from "framer-motion";
 import BaseService from "../../../services/BaseService";
 const backendURL = BaseService.defaults.baseURL;
 const AchievdWishesList = () => {
@@ -122,121 +123,141 @@ const AchievdWishesList = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-sm rounded-lg">
-      {isLoading ? (
-        // Render skeleton loaders while data is loading
-        <ul className="divide-y divide-gray-200">
-          {[...Array(5)].map((_, index) => (
-            <li key={index} className="p-4">
-              <GeometrySkeleton />
-            </li>
-          ))}
-        </ul>
-      ) : data && data.length > 0 ? (
-        <ul className="divide-y divide-gray-200">
-          {data.map((item) => (
-            <li key={item._id} className="flex items-center p-4 space-x-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-green-200 text-gray-600 rounded-full flex items-center justify-center font-bold text-base">
-                {item.role}
-              </div>
-              <div
-                className="flex-grow cursor-pointer"
-                onClick={() => handleShowWish(item._id)}
-              >
-                <h4 className="text-sm font-semibold text-gray-800">
-                  {item.text.split(" ").length > 4
-                    ? item.text.split(" ").slice(0, 4).join(" ") + "..."
-                    : item.text}
-                </h4>
-                <p className="text-xs text-gray-500">
-                  {new Date(item.createdAt).toLocaleString()}
-                </p>
-                <div className="flex text-xs">
-                  <p className="text-green-700 mr-1 font-bold">Achieved On:</p>
-                  <p className="text-green-500">
-                    {new Date(item.updatedAt).toLocaleString()}
-                  </p>
+    <motion.div
+      variants={{
+        hidden: {
+          opacity: 0,
+          y: -20,
+        },
+
+        visible: {
+          opacity: 1,
+          y: 0,
+        },
+      }}
+      initial="hidden"
+      whileInView="visible"
+      transition={{ duration: 1, delay: 0.1 }}
+      viewport={{ once: true }}
+    >
+      <div className="max-w-md mx-auto bg-white shadow-sm rounded-lg">
+        {isLoading ? (
+          // Render skeleton loaders while data is loading
+          <ul className="divide-y divide-gray-200">
+            {[...Array(5)].map((_, index) => (
+              <li key={index} className="p-4">
+                <GeometrySkeleton />
+              </li>
+            ))}
+          </ul>
+        ) : data && data.length > 0 ? (
+          <ul className="divide-y divide-gray-200">
+            {data.map((item) => (
+              <li key={item._id} className="flex items-center p-4 space-x-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-green-200 text-gray-600 rounded-full flex items-center justify-center font-bold text-base">
+                  {item.role}
                 </div>
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleDeleteConfirmation(item)}
-                  className="text-red-500 hover:text-red-700"
+                <div
+                  className="flex-grow cursor-pointer"
+                  onClick={() => handleShowWish(item._id)}
                 >
-                  <CiTrash />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <Empty message="No achieved wishes available." />
-      )}
+                  <h4 className="text-sm font-semibold text-gray-800">
+                    {item.text.split(" ").length > 4
+                      ? item.text.split(" ").slice(0, 4).join(" ") + "..."
+                      : item.text}
+                  </h4>
+                  <p className="text-xs text-gray-500">
+                    {new Date(item.createdAt).toLocaleString()}
+                  </p>
+                  <div className="flex text-xs">
+                    <p className="text-green-700 mr-1 font-bold">
+                      Achieved On:
+                    </p>
+                    <p className="text-green-500">
+                      {new Date(item.updatedAt).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleDeleteConfirmation(item)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <CiTrash />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Empty message="No achieved wishes available." />
+        )}
 
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
 
-      {/* Popup */}
-      {popupWish && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6 relative">
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              onClick={handleClosePopup}
-              aria-label="Close"
-            >
-              ✖
-            </button>
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Wish Details
-            </h2>
-            <p className="text-sm text-gray-600">{popupWish?.text}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Dialog */}
-      {openDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Confirm Deletion
-            </h2>
-            <p className="text-sm text-gray-600 mb-6">
-              Are you sure you want to delete this wish?
-            </p>
-            <div className="flex justify-end space-x-4">
+        {/* Popup */}
+        {popupWish && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6 relative">
               <button
-                className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
-                onClick={handleCloseDialog}
+                className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+                onClick={handleClosePopup}
+                aria-label="Close"
               >
-                Cancel
+                ✖
               </button>
-              <button
-                onClick={handleDelete}
-                disabled={deletingId === selectedWish?._id}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg"
-              >
-                {deletingId === selectedWish?._id ? "Deleting..." : "Delete"}
-              </button>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Wish Details
+              </h2>
+              <p className="text-sm text-gray-600">{popupWish?.text}</p>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+
+        {/* Dialog */}
+        {openDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Confirm Deletion
+              </h2>
+              <p className="text-sm text-gray-600 mb-6">
+                Are you sure you want to delete this wish?
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
+                  onClick={handleCloseDialog}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deletingId === selectedWish?._id}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                >
+                  {deletingId === selectedWish?._id ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 

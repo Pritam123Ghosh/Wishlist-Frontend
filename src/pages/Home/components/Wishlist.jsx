@@ -14,6 +14,7 @@ import Alert from "@mui/material/Alert";
 import Empty from "../../../utils/Empty";
 import GeometrySkeleton from "../../../utils/Skeleton";
 import BaseService from "../../../services/BaseService";
+import { motion } from "framer-motion";
 const backendURL = BaseService.defaults.baseURL;
 const WishList = ({ refreshTrigger }) => {
   const dispatch = useDispatch();
@@ -213,173 +214,191 @@ const WishList = ({ refreshTrigger }) => {
   };
 
   return (
-    <div className="max-w-md sm:mx-auto rounded-lg mx-2">
-      {isLoading ? (
-        // Render skeletons while loading
-        <ul className="divide-y divide-gray-200">
-          {[...Array(5)].map((_, index) => (
-            <li key={index} className="p-4">
-              <GeometrySkeleton />
-            </li>
-          ))}
-        </ul>
-      ) : data && data.length > 0 ? (
-        <ul className="divide-y divide-gray-200">
-          {data.map((item) => (
-            <li key={item._id} className="flex items-center p-4 space-x-4">
-              {/* Avatar */}
-              <div className="flex-shrink-0 w-10 h-10 bg-blue-200 text-gray-600 rounded-full flex items-center justify-center font-bold text-base">
-                {item.role}
-              </div>
+    <motion.div
+      variants={{
+        hidden: {
+          opacity: 0,
+          y: -20,
+        },
 
-              {/* Content */}
-              <div
-                className="flex-grow cursor-pointer"
-                onClick={() => handleShowWish(item._id)}
+        visible: {
+          opacity: 1,
+          y: 0,
+        },
+      }}
+      initial="hidden"
+      whileInView="visible"
+      transition={{ duration: 1, delay: 0.1 }}
+      viewport={{ once: true }}
+    >
+      <div className="max-w-md sm:mx-auto rounded-lg mx-2">
+        {isLoading ? (
+          // Render skeletons while loading
+          <ul className="divide-y divide-gray-200">
+            {[...Array(5)].map((_, index) => (
+              <li key={index} className="p-4">
+                <GeometrySkeleton />
+              </li>
+            ))}
+          </ul>
+        ) : data && data.length > 0 ? (
+          <ul className="divide-y divide-gray-200">
+            {data.map((item) => (
+              <li key={item._id} className="flex items-center p-4 space-x-4">
+                {/* Avatar */}
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-200 text-gray-600 rounded-full flex items-center justify-center font-bold text-base">
+                  {item.role}
+                </div>
+
+                {/* Content */}
+                <div
+                  className="flex-grow cursor-pointer"
+                  onClick={() => handleShowWish(item._id)}
+                >
+                  <h4 className="text-sm font-semibold text-gray-800">
+                    {item.text.split(" ").length > 4
+                      ? item.text.split(" ").slice(0, 4).join(" ") + "..."
+                      : item.text}
+                  </h4>
+                  <p className="text-xs text-gray-500">
+                    {new Date(item.createdAt).toLocaleString()}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <CiEdit />
+                  </button>
+                  <button
+                    onClick={() => handleAchieve(item)}
+                    className="text-green-500 hover:text-green-700"
+                  >
+                    <GoChecklist />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteConfirmation(item)} // Trigger delete confirmation
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <CiTrash />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Empty description="No wishes available" />
+        )}
+        {popupWish && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6 relative">
+              {/* Close Icon */}
+              <button
+                className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+                onClick={handleClosePopup}
+                aria-label="Close"
               >
-                <h4 className="text-sm font-semibold text-gray-800">
-                  {item.text.split(" ").length > 4
-                    ? item.text.split(" ").slice(0, 4).join(" ") + "..."
-                    : item.text}
-                </h4>
-                <p className="text-xs text-gray-500">
-                  {new Date(item.createdAt).toLocaleString()}
-                </p>
-              </div>
+                ✖
+              </button>
 
-              {/* Actions */}
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(item)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  <CiEdit />
-                </button>
-                <button
-                  onClick={() => handleAchieve(item)}
-                  className="text-green-500 hover:text-green-700"
-                >
-                  <GoChecklist />
-                </button>
-                <button
-                  onClick={() => handleDeleteConfirmation(item)} // Trigger delete confirmation
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <CiTrash />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <Empty description="No wishes available" />
-      )}
-      {popupWish && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6 relative">
-            {/* Close Icon */}
-            <button
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              onClick={handleClosePopup}
-              aria-label="Close"
-            >
-              ✖
-            </button>
-
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Wish Details
-            </h2>
-            <p className="text-sm text-gray-600">{popupWish?.text}</p>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Wish Details
+              </h2>
+              <p className="text-sm text-gray-600">{popupWish?.text}</p>
+            </div>
           </div>
-        </div>
-      )}
-      {/* Snackbar for Notifications */}
+        )}
+        {/* Snackbar for Notifications */}
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
           onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-      <div
-        className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ${
-          openEditDialog ? "block" : "hidden"
-        }`}
-      >
-        <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
-          {/* Dialog Title */}
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Edit Wish
-          </h2>
-
-          {/* Dialog Content */}
-          <textarea
-            className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-            value={updatedText}
-            onChange={(e) => setUpdatedText(e.target.value)}
-            rows={2}
-          ></textarea>
-
-          {/* Dialog Actions */}
-          <div className="flex justify-end space-x-4 mt-4">
-            <button
-              className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-              onClick={() => setOpenEditDialog(false)}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpdate}
-              disabled={updatingId === selectedWish?._id}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-            >
-              {updatingId === selectedWish?._id ? "Updating..." : "Update"}
-            </button>
-          </div>
-        </div>
-      </div>
-      {/* Confirmation Dialog */}
-      {openDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+        <div
+          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ${
+            openEditDialog ? "block" : "hidden"
+          }`}
+        >
           <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
             {/* Dialog Title */}
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Confirm Deletion
+              Edit Wish
             </h2>
 
             {/* Dialog Content */}
-            <p className="text-sm text-gray-600 mb-6">
-              Are you sure you want to delete this wish?
-            </p>
+            <textarea
+              className="w-full border border-gray-300 rounded-lg p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              value={updatedText}
+              onChange={(e) => setUpdatedText(e.target.value)}
+              rows={2}
+            ></textarea>
 
             {/* Dialog Actions */}
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-end space-x-4 mt-4">
               <button
                 className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-                onClick={handleCloseDialog}
+                onClick={() => setOpenEditDialog(false)}
               >
                 Cancel
               </button>
               <button
-                onClick={handleDelete}
-                disabled={deletingId === selectedWish?._id}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                onClick={handleUpdate}
+                disabled={updatingId === selectedWish?._id}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
               >
-                {deletingId === selectedWish?._id ? "Deleting..." : "Delete"}
+                {updatingId === selectedWish?._id ? "Updating..." : "Update"}
               </button>
             </div>
           </div>
         </div>
-      )}
-    </div>
+        {/* Confirmation Dialog */}
+        {openDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
+              {/* Dialog Title */}
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Confirm Deletion
+              </h2>
+
+              {/* Dialog Content */}
+              <p className="text-sm text-gray-600 mb-6">
+                Are you sure you want to delete this wish?
+              </p>
+
+              {/* Dialog Actions */}
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                  onClick={handleCloseDialog}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deletingId === selectedWish?._id}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                >
+                  {deletingId === selectedWish?._id ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 
