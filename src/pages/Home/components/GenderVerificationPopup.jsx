@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 import {
   Dialog,
@@ -9,16 +8,16 @@ import {
 import Male from "../../../assets/malelogo-Photoroom.png";
 import female from "../../../assets/femalelogo-Photoroom.png";
 
-const GenderVerificationPopup = ({ onRoleSelect }) => {
+export default function GenderVerificationPopup() {
   const [open, setOpen] = useState(true);
 
   const handleRoleSelection = (role) => {
     // Save the role in localStorage
     localStorage.setItem("role", role);
     // Close the dialog
-    onRoleSelect(role);
     setOpen(false);
   };
+
   return (
     <Dialog open={open} onClose={() => {}} className="relative z-10">
       <DialogBackdrop
@@ -83,6 +82,4 @@ const GenderVerificationPopup = ({ onRoleSelect }) => {
       </div>
     </Dialog>
   );
-};
-
-export default GenderVerificationPopup;
+}
