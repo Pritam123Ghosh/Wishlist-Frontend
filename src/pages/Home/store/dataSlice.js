@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
-import { apiAchieveWish, apiCreateWish, apiDeleteWish, apiGetOneWish, apiGetWishList, apiUpdateWish } from '../../../services/HomeService'
+import { apiAchieveWish, apiCreateWish, apiDeleteWish, apiGetOneWish, apiGetWishList, apiPutReact, apiUpdateWish } from '../../../services/HomeService'
 
 export const getWishList = createAsyncThunk(
     'wish/data/getWishList',
@@ -37,6 +37,14 @@ export const updateWish = createAsyncThunk(
         return response.data;
     }
 );
+
+export const reactWish = createAsyncThunk(
+    "wish/data/reactWish",
+    async ({ id, ...updateData }) => {
+        const response = await apiPutReact(id, updateData); // Pass id and updateData separately
+        return response.data;
+    }
+)
 export const achieveWish = createAsyncThunk(
     "wish/data/achieveWish",
     async ({ id, ...data }) => {
@@ -116,7 +124,8 @@ const dataSlice = createSlice({
             .addCase(createWish.fulfilled, (state, action) => { })
             .addCase(updateWish.fulfilled, (state, action) => { })
             .addCase(achieveWish.fulfilled, (state, action) => { })
-            .addCase(deleteWish.fulfilled, (state, action) => { });
+            .addCase(deleteWish.fulfilled, (state, action) => { })
+            .addCase(reactWish.fulfilled, (state, action) => { });
     },
 })
 

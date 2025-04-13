@@ -51,3 +51,11 @@ export async function apiGetOneWish(id) {
         method: 'get', // Use 'get' for fetching details
     });
 }
+
+export async function apiPutReact(id, data) {
+    return ApiService.fetchData({
+        url: `/api/messages/reacted/${id}`,
+        method: 'put',
+        data,
+    });
+}

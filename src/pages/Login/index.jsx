@@ -22,7 +22,6 @@ const Login = () => {
 
       if (response.status === 200) {
         const responseData = response.data;
-        console.log("responseData", responseData);
         const user = responseData.payload;
         const userID = responseData?.data?._id;
         localStorage.setItem("userID", userID);

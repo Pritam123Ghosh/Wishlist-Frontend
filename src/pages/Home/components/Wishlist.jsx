@@ -7,6 +7,7 @@ import {
   achieveWish,
   deleteWish,
   getWishList,
+  reactWish,
   updateWish,
 } from "../store/dataSlice";
 import Snackbar from "@mui/material/Snackbar";
@@ -15,13 +16,13 @@ import Empty from "../../../utils/Empty";
 import GeometrySkeleton from "../../../utils/Skeleton";
 import BaseService from "../../../services/BaseService";
 import { motion } from "framer-motion";
+import LoveButton from "./LoveButton";
 const backendURL = BaseService.defaults.baseURL;
 const WishList = ({ refreshTrigger }) => {
   const dispatch = useDispatch();
   const userID = localStorage.getItem("userID");
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role") || "guest";
-  console.log("userID: " + userID);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -37,13 +38,10 @@ const WishList = ({ refreshTrigger }) => {
   const [updatingId, setUpdatingId] = useState(null); // ID of wish being updated
   const [deletingId, setDeletingId] = useState(null); // ID of wish being deleted
   const data = useSelector((state) => state.wish?.data?.wishList?.data);
-  const oneWish = useSelector((state) => state.wish?.data?.oneWish?.data);
   const { isLoading } = useSelector((state) => ({
     isLoading: state.wish?.data?.loading,
   }));
 
-  console.log("isLoading", isLoading);
-  console.log("oneWish", oneWish);
   useEffect(() => {
     if (userID && role) {
       dispatch(getWishList({ userID })); // Dispatch the getWishList action with userID and role
@@ -169,7 +167,7 @@ const WishList = ({ refreshTrigger }) => {
   //   try {
   //     const fetchedWish = await dispatch(getOneWish(id)).unwrap(); // Get the fetched wish directly
   //     setPopupWish(fetchedWish?.data); // Set the fetched wish to the popup state
-  //     console.log("fetchedWish", fetchedWish);
+
   //   } catch (error) {
   //     console.error("Failed to fetch wish:", error);
   //     setSnackbar({
@@ -198,7 +196,6 @@ const WishList = ({ refreshTrigger }) => {
 
       const fetchedWish = await response.json(); // Parse the JSON response
       setPopupWish(fetchedWish.data); // Set the fetched data to the popup state
-      console.log("Fetched Wish:", fetchedWish);
     } catch (error) {
       console.error("Error fetching wish:", error);
       setSnackbar({
@@ -211,6 +208,19 @@ const WishList = ({ refreshTrigger }) => {
 
   const handleClosePopup = () => {
     setPopupWish(null); // Close the popup
+  };
+
+  const handleReact = async (wishId, isReacted) => {
+    try {
+      await dispatch(reactWish({ id: wishId, isReacted })).unwrap();
+    } catch (error) {
+      console.error("Failed to react to wish:", error);
+      setSnackbar({
+        open: true,
+        message: error.message || "Failed to react to wish. Please try again.",
+        severity: "error",
+      });
+    }
   };
 
   return (
@@ -267,6 +277,12 @@ const WishList = ({ refreshTrigger }) => {
 
                 {/* Actions */}
                 <div className="flex space-x-2">
+                  <button>
+                    <LoveButton
+                      initiallyLiked={item.isReacted}
+                      onClick={(liked) => handleReact(item._id, liked)}
+                    />
+                  </button>
                   <button
                     onClick={() => handleEdit(item)}
                     className="text-blue-500 hover:text-blue-700"

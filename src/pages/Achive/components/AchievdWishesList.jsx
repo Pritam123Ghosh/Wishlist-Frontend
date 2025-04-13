@@ -19,7 +19,6 @@ const AchievdWishesList = () => {
   const { isLoading } = useSelector((state) => ({
     isLoading: state.achievedWish?.data?.loading,
   }));
-  console.log(data);
   const dispatch = useDispatch();
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -108,7 +107,6 @@ const AchievdWishesList = () => {
 
       const fetchedWish = await response.json(); // Parse the JSON response
       setPopupWish(fetchedWish.data); // Set the fetched data to the popup state
-      console.log("Fetched Wish:", fetchedWish);
     } catch (error) {
       console.error("Error fetching wish:", error);
       setSnackbar({

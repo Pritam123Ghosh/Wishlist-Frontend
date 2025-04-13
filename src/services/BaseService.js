@@ -14,14 +14,8 @@ const BaseService = axios.create({
 BaseService.interceptors.request.use(
   (config) => {
     const rawPersistData = localStorage.getItem('token')
-    // //console.log("rawPersistData", rawPersistData);
-
-    // //console.log("persistData", rawPersistData);
 
     let accessToken = rawPersistData ? rawPersistData : null
-
-    // // //console.log(accessToken);
-    // // if (accessToken) {
     config.headers['authorization'] = `Bearer ${accessToken}`
 
     // }
@@ -42,7 +36,6 @@ BaseService.interceptors.response.use(
       localStorage.removeItem('authentication')
       window.location.href = '/login'
     }
-    //console.log(response.data);
     return response
   },
   (error) => {
