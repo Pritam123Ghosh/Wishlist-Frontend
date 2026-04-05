@@ -7,7 +7,7 @@ import axios from 'axios'
 
 const BaseService = axios.create({
   timeout: 60000,
-  baseURL: 'https://wishlist-backend-2.onrender.com',
+  baseURL: import.meta.env.VITE_API_URL,
   // https://property-s62m.onrender.com
 })
 //"https://e0cb-2409-4081-2b1b-25fd-1155-886f-3a56-3fc7.ngrok-free.app"
