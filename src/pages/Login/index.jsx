@@ -23,7 +23,7 @@ const Login = () => {
       if (response.status === 200) {
         const responseData = response.data;
         const user = responseData.payload;
-        const userID = responseData?.data?._id;
+        const userID = responseData?.data?.id;
         localStorage.setItem("userID", userID);
         localStorage.setItem("token", user);
 

@@ -58,9 +58,9 @@ const WishList = ({ refreshTrigger }) => {
 
   const handleUpdate = async () => {
     try {
-      setUpdatingId(selectedWish._id);
+      setUpdatingId(selectedWish.id);
       await dispatch(
-        updateWish({ id: selectedWish._id, text: updatedText, role })
+        updateWish({ id: selectedWish.id, text: updatedText, role })
       ).unwrap();
       setSnackbar({
         open: true,
@@ -95,7 +95,7 @@ const WishList = ({ refreshTrigger }) => {
 
   const handleAchieve = async (item) => {
     try {
-      await dispatch(achieveWish({ id: item._id, isAchieved: true })).unwrap();
+      await dispatch(achieveWish({ id: item.id, isAchieved: true })).unwrap();
       setSnackbar({
         open: true,
         message: "Wish marked as achieved!",
@@ -121,8 +121,8 @@ const WishList = ({ refreshTrigger }) => {
 
   const handleDelete = async () => {
     try {
-      setDeletingId(selectedWish._id); // Set the deleting ID
-      await dispatch(deleteWish({ id: selectedWish._id, role })).unwrap();
+      setDeletingId(selectedWish.id); // Set the deleting ID
+      await dispatch(deleteWish({ id: selectedWish.id, role })).unwrap();
       setSnackbar({
         open: true,
         message: "Wish deleted successfully!",
@@ -254,7 +254,7 @@ const WishList = ({ refreshTrigger }) => {
         ) : data && data.length > 0 ? (
           <ul className="divide-y divide-gray-200">
             {data.map((item) => (
-              <li key={item._id} className="flex items-center p-4 space-x-4">
+              <li key={item.id} className="flex items-center p-4 space-x-4">
                 {/* Avatar */}
                 <div className="flex-shrink-0 w-10 h-10 bg-blue-200 text-gray-600 rounded-full flex items-center justify-center font-bold text-base">
                   {item.role}
@@ -263,7 +263,7 @@ const WishList = ({ refreshTrigger }) => {
                 {/* Content */}
                 <div
                   className="flex-grow cursor-pointer"
-                  onClick={() => handleShowWish(item._id)}
+                  onClick={() => handleShowWish(item.id)}
                 >
                   <h4 className="text-sm font-semibold text-gray-800">
                     {item.text.split(" ").length > 4
@@ -280,7 +280,7 @@ const WishList = ({ refreshTrigger }) => {
                   <button>
                     <LoveButton
                       initiallyLiked={item.isReacted}
-                      onClick={(liked) => handleReact(item._id, liked)}
+                      onClick={(liked) => handleReact(item.id, liked)}
                     />
                   </button>
                   <button
@@ -372,10 +372,10 @@ const WishList = ({ refreshTrigger }) => {
               </button>
               <button
                 onClick={handleUpdate}
-                disabled={updatingId === selectedWish?._id}
+                disabled={updatingId === selectedWish?.id}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"
               >
-                {updatingId === selectedWish?._id ? "Updating..." : "Update"}
+                {updatingId === selectedWish?.id ? "Updating..." : "Update"}
               </button>
             </div>
           </div>
@@ -404,10 +404,10 @@ const WishList = ({ refreshTrigger }) => {
                 </button>
                 <button
                   onClick={handleDelete}
-                  disabled={deletingId === selectedWish?._id}
+                  disabled={deletingId === selectedWish?.id}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg"
                 >
-                  {deletingId === selectedWish?._id ? "Deleting..." : "Delete"}
+                  {deletingId === selectedWish?.id ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>
