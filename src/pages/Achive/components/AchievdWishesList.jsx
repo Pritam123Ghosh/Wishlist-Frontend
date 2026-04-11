@@ -47,8 +47,8 @@ const AchievdWishesList = () => {
 
   const handleDelete = async () => {
     try {
-      setDeletingId(selectedWish._id);
-      await dispatch(deleteWish({ id: selectedWish._id, role })).unwrap();
+      setDeletingId(selectedWish.id);
+      await dispatch(deleteWish({ id: selectedWish.id, role })).unwrap();
       setSnackbar({
         open: true,
         message: "Wish deleted successfully!",
@@ -151,13 +151,13 @@ const AchievdWishesList = () => {
         ) : data && data.length > 0 ? (
           <ul className="divide-y divide-gray-200">
             {data.map((item) => (
-              <li key={item._id} className="flex items-center p-4 space-x-4">
+              <li key={item.id} className="flex items-center p-4 space-x-4">
                 <div className="flex-shrink-0 w-10 h-10 bg-green-200 text-gray-600 rounded-full flex items-center justify-center font-bold text-base">
                   {item.role}
                 </div>
                 <div
                   className="flex-grow cursor-pointer"
-                  onClick={() => handleShowWish(item._id)}
+                  onClick={() => handleShowWish(item.id)}
                 >
                   <h4 className="text-sm font-semibold text-gray-800">
                     {item.text.split(" ").length > 4
@@ -245,10 +245,10 @@ const AchievdWishesList = () => {
                 </button>
                 <button
                   onClick={handleDelete}
-                  disabled={deletingId === selectedWish?._id}
+                  disabled={deletingId === selectedWish?.id}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg"
                 >
-                  {deletingId === selectedWish?._id ? "Deleting..." : "Delete"}
+                  {deletingId === selectedWish?.id ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>
